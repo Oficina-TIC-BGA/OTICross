@@ -21,6 +21,13 @@
 El programa ejecutará estos pasos e imprimirá cada paso en la GUI y en la pantalla negra paralelamente.
 Al final guardara un archivo excel en la misma ruta donde se leyeron los archivos iniciales.
 
-## Limitaciones 
+## Limitaciones
+* En esta versión solo es posible leer archivos excel. 
+* Aunque no hay limitaciones con el tamaño de los archivos, a mayor volumen de datos el programa demora
+  más su ejecución dando la sensación de haberse bloqueado.
 
 ## Mejoras - TO DO:
+* Habilitar la opción de leer archivos CSV.
+* Ejecutar el proceso de cargue de archivos en un nuevo proceso para hacer más ligera la ejecución.
+* Listar las variables que hay en cada archivo con el fin de seleccionarlas y no de ingresarlas manualmente.
+* Hacer más testeo-
