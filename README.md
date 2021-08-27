@@ -38,5 +38,6 @@ Al final guardara un archivo excel en la misma ruta donde se leyeron los archivo
 * Pandas
 * Numpy
 * Pyinstaller
+* xlsxwriter
 
 Comando Pyinstaller para generar el .exe --> pyinstaller -n oticross --onefile --clean main.py
