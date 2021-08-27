@@ -24,9 +24,10 @@ def check_root_vars(root):
         print('Hay pasos que no se llenaron!')
         params = {}
     return params    
+       
 
 
-def load_files(filenames_list):
+def load_files(root):
     """
     Función que carga los dos archivos excel
     Input: La lista con la rutas absolutas de los archivos a leer seleccionadas por el usuario
@@ -35,19 +36,13 @@ def load_files(filenames_list):
     # TODO: Poder cargar archivos CSV
     try:
         # intentar lectura de archivos - La funcion siempre leera la primera sheet en el cuaderno excel
-        print('Cargando archivos ...')
-        file_left = pd.read_excel(filenames_list[0])
-        file_right = pd.read_excel(filenames_list[1])
-        print('Archivos cargados con exitosamente!')
-        print('Archivo 1 con {} filas y {} columnas'.format(file_left.shape[0],
-                                                            file_left.shape[1]))
-        print('Archivo 2 con {} filas y {} columnas'.format(file_right.shape[0],
-                                                            file_right.shape[1]))   
-
-        return file_left, file_right                                                                                                     
+        file_left = pd.read_excel(root.filename[0])
+        file_right = pd.read_excel(root.filename[1])                                                                                                    
     except:
         print('No se pudo cargar los archivos, revisar archivos')
-        return None, None 
+        file_left, file_right = None, None 
+
+    return file_left, file_right
 
 def files_preparation(file_left, file_right, params):
     """
@@ -115,15 +110,15 @@ def files_preparation(file_left, file_right, params):
             # Para la opcion no eliminar
             print('No se elimina repetido de ningún archivo') 
 
-        return file_left, file_right
-
     else:
         print('Error en los archivos')
         
-        return None, None   
+        file_left, file_right = None, None 
+    
+    return file_left, file_right    
 
 
-def crossing_files(file_left, file_right,params):
+def crossing_files(file_left, file_right, params):
     """
     Función que ejecuta el cruce de los archivos preparados segun opciones escogidas por el usuario
     Input: Los dos pandas dataframes preparados y los parametros con las llaves y tipo de cruce
@@ -140,12 +135,13 @@ def crossing_files(file_left, file_right,params):
     # ejecutar el cruce, si los archivos tiene columnas con el mismo nombre, las columnas del 
     # segundo archivo se les agregar el sufijo '_y'
     # se podria dependiendo de las opciones validar el cruce si es '1:1', '1:m', 'm:1', 'm:m'
-    return file_left.merge(file_right, 
+    result =  file_left.merge(file_right, 
                     left_on=params['keys_left'], 
                     right_on=params['keys_right'], 
                     how=dropdown2merge[params['type']],
                     suffixes=('','_y'), 
                     )
+    return result                
     
 
 

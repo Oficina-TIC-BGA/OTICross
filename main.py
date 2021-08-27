@@ -118,20 +118,62 @@ def main():
             # Se obtiene el texto de la variable cada vez que se ingresa un valor
             root.txt_4 = var.get() 
 
-        def close():
+        def exe():
             """
-            Función que cierra la GUI para ejecutar el código
+            Función que ejecuta todo el programa 
             """
-            lbl_7['text'] = 'El programa se cerrará cuando termine'
-            # cierra la GUI
-            root.quit_app = 'si'
-            root.quit()                         
+            print('El programa se esta ejecutando ..')
+            lbl_7['text'] = 'El programa se esta ejecutando ..'
+            # verificar que todas las variables se puedan acceder y crear el 
+            # diccionario de parametros globalmente
+            lbl_8 = tk.Label(root, text='1. Verificando variables ..')
+            lbl_8.place(x=540,y=340)
+            params = helpers.check_root_vars(root)
+            if len(params)!=0:
+                # ejecutar operaciones con pandas 
+                # 1. Cargar archivos
+                print('Cargando archivos')
+                lbl_9 = tk.Label(root, text='2. Cargando archivos')
+                lbl_9.place(x=540,y=360)
+                file_left, file_right = helpers.load_files(root)
+                print('Archivos cargados exitosamente')
+                lbl_10 = tk.Label(root, text='Archivos cargados exitosamente!')
+                lbl_10.place(x=540,y=380)
+                lbl_11 = tk.Label(root, text='Archivo 1 con {} filas y {} columnas'.format(file_left.shape[0],
+                                                            file_left.shape[1]))
+                lbl_11.place(x=540,y=400)
+                lbl_12 = tk.Label(root, text='Archivo 2 con {} filas y {} columnas'.format(file_right.shape[0],
+                                                            file_right.shape[1])) 
+                lbl_12.place(x=540,y=420)                                            
+                # 2. limpieza y preparación de archivos
+                print('Limpiando y preparando archivos')
+                lbl_13 = tk.Label(root, text='3. Limpiando y preparando archivos')
+                lbl_13.place(x=540,y=440)
+                file_left, file_right = helpers.files_preparation(file_left, file_right, params)
+                # 3. Cruzar los archivos
+                print('Cruzando archivos')
+                lbl_14 = tk.Label(root, text='4. Cruzando archivos')
+                lbl_14.place(x=540,y=460)
+                result = helpers.crossing_files(file_left, file_right, params)
+                # 4. almacenar el resultado como excel
+                # TODO: habilitar la opción de almacenar csv 
+                # se crea el path tomando la direccion base de uno de los archivos y agregando el nombre del resultado
+                path = root.filename[0].split('/')[:-1]
+                # se usa xlsxwriter porque es más eficiente para crear excel grandes
+                print('Almacenando el resultado')
+                lbl_15 = tk.Label(root, text='5. Se esta almacenando el resultado en {}'.format('/'.join(path+['resultado_cruce.xlsx'])))
+                lbl_15.place(x=540,y=480)
+                result.to_excel('/'.join(path+['resultado_cruce.xlsx']) ,index=False, engine='xlsxwriter') 
+                lbl_16 = tk.Label(root, text='El archivo resultante tiene {} filas y {} columnas'.format(result.shape[0], result.shape[1]))
+                lbl_16.place(x=540,y=500)
+                print('Proceso finalizado')
+            else:
+                print('Aplicación no procesada, seleccione todos los valores correctamente en cada paso')                          
 
         # GUI
         root.state('zoomed') # Para agrandar toda la pantalla
         root.title('OTICross - Oficina TIC Alcaldía de Bucaramanga') # Para poner titulo en el banner
         # definir variables por defecto
-        root.quit_app = 'no' # variable control para saber si el usurio dio en ejecutar
         root.cmbx_1 = 'No eliminar' # accion de eliminados a ejecutar por defecto
         root.cmbx_1_c = 'En ambos archivos' # target de archivo para aplicar la función por defecto
         root.cmbx_2 = 'Izquierda' # tipo de cruce por defecto
@@ -226,45 +268,15 @@ def main():
         lbl_7.place(x=540,y=320)
         btn_cross = tk.Button(root, text='Ejecutar', 
                              font=("Verdana", 12),
-                             command=close)
+                             command=exe)
         btn_cross.place(x=550,y=290)                     
 
     # crear la app
     root = tk.Tk()
-    # crea la GUI
+    # crea la GUI y ejecuta todo el programa
     create_initial_gui()
     # captura todo lo que pasa en la GUI
-    root.mainloop()
-
-    # hacer la verificación si el usuario dio en el boton ejecutar 
-    # y si lleno todos los valores necesarios
-    if root.quit_app=='si':
-        # validar si todos los campos tiene valor para poder ejecutar las operaciones
-        print('Verificando variables ..')
-        params = helpers.check_root_vars(root)
-        if len(params)!=0:
-            # ejecutar operaciones con pandas 
-            # 1. Cargar archivos
-            file_left, file_right  = helpers.load_files(params['filenames'])
-            # 2. limpieza y preparación de archivos
-            file_left, file_right  = helpers.files_preparation(file_left, file_right, params)
-            # 3. Cruzar los archivos
-            result = helpers.crossing_files(file_left, file_right, params)
-            # 4. almacenar el resultado como excel
-            # TODO: habilitar la ipción de almacenar csv 
-            # se crea el path tomando la direccion base de uno de los archivos y agregando el nombre del resultado
-            path = root.filename[0].split('/')[:-1]
-            # se usa xlsxwriter porque es más eficiente para crear excel grandes
-            result.to_excel('/'.join(path+['resultado_cruce.xlsx']) ,index=False, engine='xlsxwriter') 
-            print('El archivo resultante tiene {} filas y {} columnas'.format(result.shape[0], result.shape[1]))
-            print('Archivo almacenado en {}'.format('/'.join(path+['resultado_cruce.xlsx'])))
-        else:
-            print('Aplicación no procesada, seleccione todos los valores correctamente en cada paso')
-        os.system("pause") # para no cerrar la consola apenas se acabe el proceso, presionar tecla para cerrar
-        #time.sleep(20) # igual funcion pero con tiempo definido
-    else:
-        # si cierra la app 
-        pass
+    root.mainloop()                    
     
 if __name__ == '__main__':
     main()
