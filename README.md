@@ -30,4 +30,13 @@ Al final guardara un archivo excel en la misma ruta donde se leyeron los archivo
 * Habilitar la opción de leer archivos CSV.
 * Ejecutar el proceso de cargue de archivos en un nuevo proceso para hacer más ligera la ejecución.
 * Listar las variables que hay en cada archivo con el fin de seleccionarlas y no de ingresarlas manualmente.
-* Hacer más testeo-
+* Hacer más testeo
+
+## Requerimientos:
+* Python 3
+* Tkinter
+* Pandas
+* Numpy
+* Pyinstaller
+
+Comando Pyinstaller para generar el .exe --> pyinstaller -n oticross --onefile --clean main.py
