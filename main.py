@@ -175,14 +175,16 @@ def main():
                 path = root.filename[0].split('/')[:-1]
                 # se usa xlsxwriter porque es más eficiente para crear excel grandes
                 print('Almacenando el resultado')
-                lbl_15 = tk.Label(root, text='5. Se esta almacenando el resultado en {}'.format('/'.join(path+['resultado_cruce.xlsx'])))
-                lbl_15.place(x=540,y=480)
 
                 # guardar excel si es muy grande se guarada csv
                 if result.shape[0]>1000000:
                     result.to_csv('/'.join(path+['resultado_cruce.csv']) ,index=False,)
+                    lbl_15 = tk.Label(root, text='5. Se esta almacenando el resultado en {}'.format('/'.join(path+['resultado_cruce.csv'])))
+                    lbl_15.place(x=540,y=480)
                 else:
                     result.to_excel('/'.join(path+['resultado_cruce.xlsx']) ,index=False, engine='xlsxwriter')
+                    lbl_15 = tk.Label(root, text='5. Se esta almacenando el resultado en {}'.format('/'.join(path+['resultado_cruce.xlsx'])))
+                    lbl_15.place(x=540,y=480)
                      
                 lbl_16 = tk.Label(root, text='El archivo resultante tiene {} filas y {} columnas'.format(result.shape[0], result.shape[1]))
                 lbl_16.place(x=540,y=500)
