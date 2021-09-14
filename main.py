@@ -40,10 +40,13 @@ def main():
                                             initialdir = '/',
                                             title = 'Seleccione los archivos',
                                             filetypes=(("xlsx files","*.xlsx"),("all files","*.*")))
-            tk.Label(root, text='Archivos seleccionados').pack()
-            tk.Label(root, text='Primer archivo {}'.format(root.filename[0])).pack()
-            tk.Label(root, text='Segundo archivo {}'.format(root.filename[1])).pack()
-        
+            if len(root.filename)>0:
+                tk.Label(root, text='Archivos seleccionados').place(x=320,y=70)
+                tk.Label(root, text='Primer archivo {}'.format(root.filename[0])).place(x=320,y=90)
+                tk.Label(root, text='Segundo archivo {}'.format(root.filename[1])).place(x=320,y=110)
+            else:
+                tk.Label(root, text='No se han cargado archivos').place(x=520,y=70)
+
         def clear_entry(event, entry, name):
             """
             Función que se ejecuta como evento sobre los cuadros de texto
@@ -118,6 +121,15 @@ def main():
             # Se obtiene el texto de la variable cada vez que se ingresa un valor
             root.txt_4 = var.get() 
 
+        def callbacksep(var):
+            """
+            Función que toma el valor de la variable texto (llaves archivo 2) y la almacena en el root 
+            cada vez que se escribe algo en el texto.
+            Input: variable de texto            
+            """
+            # Se obtiene el texto de la variable cada vez que se ingresa un valor
+            root.txt_sep = var.get()             
+
         def exe():
             """
             Función que ejecuta todo el programa 
@@ -177,12 +189,22 @@ def main():
         root.cmbx_1 = 'No eliminar' # accion de eliminados a ejecutar por defecto
         root.cmbx_1_c = 'En ambos archivos' # target de archivo para aplicar la función por defecto
         root.cmbx_2 = 'Izquierda' # tipo de cruce por defecto
+        root.txt_sep = ',' 
 
-        # TODO: Permitir cargar archivos CSV
+        # Seleccionar el tipo de separador para los archivo csv o txt en caso de seleccionarlos
+        txt_var_sep = tk.StringVar()
+        txt_var_sep.trace("w", lambda name, index,mode, var=txt_var_sep: callbacksep(txt_var_sep))
+        txt_entry_key_sep = tk.Entry(root, width=20,textvariable=txt_var_sep)
+        txt_entry_key_sep.place(x=520,y=45)
+        txt_entry_key_sep.insert(0,'Separador para txt, csv')
+        txt_entry_key_sep.bind("<Button-1>", lambda event: clear_entry(event, txt_entry_key_sep, "<Button-1>"))
+
+        # cargar archivos
         greet = tk.Label(root, text='Aplicativo para cruzar archivos excel',
                          font=("Verdana", 18)).pack() # Para poner el titulo dentro de la GUI
-        btn_open = tk.Button(root, text='Cargar excel', command=open_files, 
-                             font=("Verdana", 12)).pack() # Boton que permite seleccionar los archivos
+        btn_open = tk.Button(root, text='Cargar archivos', command=open_files, 
+                             font=("Verdana", 12)) # Boton que permite seleccionar los archivos
+        btn_open.place(x=660,y=40)
         lbl_2 = tk.Label(root,text='Paso 1 - Cargar archivos:',font=("Verdana", 14))
         lbl_2.place(x=260,y=40)   
 

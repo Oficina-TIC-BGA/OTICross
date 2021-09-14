@@ -33,11 +33,22 @@ def load_files(root):
     Input: La lista con la rutas absolutas de los archivos a leer seleccionadas por el usuario
     Return: Los dos archivos en formato pandas Dataframe
     """
-    # TODO: Poder cargar archivos CSV
     try:
         # intentar lectura de archivos - La funcion siempre leera la primera sheet en el cuaderno excel
-        file_left = pd.read_excel(root.filename[0])
-        file_right = pd.read_excel(root.filename[1])                                                                                                    
+        if root.filename[0].split('.')[-1] in ['csv', 'txt', 'CSV', 'TXT']:
+            file_left = pd.read_csv(root.filename[0], header=0, sep=root.txt_sep, error_bad_lines=False, encoding='latin-1')    
+        elif root.filename[0].split('.')[-1] in ['xlsx', 'xls', 'XLSX', 'XLS'] :
+            file_left = pd.read_excel(root.filename[0])
+        else:
+            print('Formato del archivo {} no valido'.format(root.filename[0]))
+
+        if root.filename[1].split('.')[-1] in ['csv', 'txt', 'CSV', 'TXT']:
+            file_right = pd.read_csv(root.filename[1], header=0, sep=root.txt_sep, error_bad_lines=False, encoding='latin-1')   
+        elif root.filename[1].split('.')[-1] in ['xlsx', 'xls'] :
+            file_right = pd.read_excel(root.filename[1])
+        else:
+            print('Formato del archivo {} no valido'.format(root.filename[1]))   
+
     except:
         print('No se pudo cargar los archivos, revisar archivos')
         file_left, file_right = None, None 
