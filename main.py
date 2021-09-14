@@ -180,7 +180,7 @@ def main():
 
                 # guardar excel si es muy grande se guarada csv
                 if result.shape[0]>1000000:
-                    result.to_csv('/'.join(path+['resultado_cruce.xlsx']) ,index=False,)
+                    result.to_csv('/'.join(path+['resultado_cruce.csv']) ,index=False,)
                 else:
                     result.to_excel('/'.join(path+['resultado_cruce.xlsx']) ,index=False, engine='xlsxwriter')
                      
