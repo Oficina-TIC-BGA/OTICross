@@ -7,6 +7,8 @@ import os
 import re
 import sys
 import time
+
+from numpy import result_type
 import helpers
 import warnings
 import xlsxwriter
@@ -147,7 +149,7 @@ def main():
                 print('Cargando archivos')
                 lbl_9 = tk.Label(root, text='2. Cargando archivos')
                 lbl_9.place(x=540,y=360)
-                file_left, file_right = helpers.load_files(root)
+                file_left, file_right = helpers.load_files(root) 
                 print('Archivos cargados exitosamente')
                 lbl_10 = tk.Label(root, text='Archivos cargados exitosamente!')
                 lbl_10.place(x=540,y=380)
@@ -175,7 +177,13 @@ def main():
                 print('Almacenando el resultado')
                 lbl_15 = tk.Label(root, text='5. Se esta almacenando el resultado en {}'.format('/'.join(path+['resultado_cruce.xlsx'])))
                 lbl_15.place(x=540,y=480)
-                result.to_excel('/'.join(path+['resultado_cruce.xlsx']) ,index=False, engine='xlsxwriter') 
+
+                # guardar excel si es muy grande se guarada csv
+                if result.shape[0]>1000000:
+                    result.to_csv('/'.join(path+['resultado_cruce.xlsx']) ,index=False,)
+                else:
+                    result.to_excel('/'.join(path+['resultado_cruce.xlsx']) ,index=False, engine='xlsxwriter')
+                     
                 lbl_16 = tk.Label(root, text='El archivo resultante tiene {} filas y {} columnas'.format(result.shape[0], result.shape[1]))
                 lbl_16.place(x=540,y=500)
                 print('Proceso finalizado')

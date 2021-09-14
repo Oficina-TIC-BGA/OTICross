@@ -1,6 +1,8 @@
 import re
+import time
 import pandas as pd
 import numpy as np
+from multiprocessing.pool import ThreadPool
 
 def check_root_vars(root):
     """
@@ -25,13 +27,10 @@ def check_root_vars(root):
         params = {}
     return params    
        
-
-
-def load_files(root):
+def load_process_1(root):
     """
-    Función que carga los dos archivos excel
-    Input: La lista con la rutas absolutas de los archivos a leer seleccionadas por el usuario
-    Return: Los dos archivos en formato pandas Dataframe
+    Proceso que se ejecuta para leer el primer archivo en otro hilo. La intención es hacer 
+    la ejecución más rápida.
     """
     try:
         # intentar lectura de archivos - La funcion siempre leera la primera sheet en el cuaderno excel
@@ -42,18 +41,61 @@ def load_files(root):
         else:
             print('Formato del archivo {} no valido'.format(root.filename[0]))
 
+    except:
+        print('No se pudo cargar los archivos, revisar archivos')
+        file_left = None 
+    
+    return file_left
+
+def load_process_2(root):
+    """
+    Proceso que se ejecuta para leer el segundo archivo en otro hilo. La intención es hacer 
+    la ejecución más rápida.
+    """
+    try:
         if root.filename[1].split('.')[-1] in ['csv', 'txt', 'CSV', 'TXT']:
             file_right = pd.read_csv(root.filename[1], header=0, sep=root.txt_sep, error_bad_lines=False, encoding='latin-1')   
-        elif root.filename[1].split('.')[-1] in ['xlsx', 'xls'] :
+        elif root.filename[1].split('.')[-1] in ['xlsx', 'xls','XLSX', 'XLS'] :
             file_right = pd.read_excel(root.filename[1])
         else:
             print('Formato del archivo {} no valido'.format(root.filename[1]))   
 
     except:
         print('No se pudo cargar los archivos, revisar archivos')
-        file_left, file_right = None, None 
+        file_right = None 
+    
+    return file_right    
 
-    return file_left, file_right
+def load_files(root):
+    """
+    Función que carga los dos archivos en procesos diferentes
+    Input: La lista con la rutas absolutas de los archivos a leer seleccionadas por el usuario
+    Return: Los dos archivos en formato pandas Dataframe
+    """
+    # Este proceso se logro mejorar en 2 sg sin embargo explorar otras alternativas 
+    # como pool.map o startmap deberia seguir mejorando
+    # la idea es leer cada archivo de manera independiente y al tiempo
+     
+    start = time.time()
+
+    #file_left, file_right = load_process(root)
+    
+    pool_1 = ThreadPool(processes=1)
+    pool_2 = ThreadPool(processes=1)
+
+    th_load_1 =  pool_1.apply_async(load_process_1, (root,))
+    th_load_2 =  pool_2.apply_async(load_process_2, (root,))
+    
+    file_left, file_right = th_load_1.get(), th_load_2.get()   
+    
+    end = time.time()
+
+    pool_1.close()
+    pool_2.close()
+
+    print('El tiempo que tomo para cargar  archivos fue de {}'.format(end - start))
+    
+    return file_left, file_right 
 
 def files_preparation(file_left, file_right, params):
     """
