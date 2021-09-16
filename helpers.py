@@ -35,7 +35,7 @@ def load_process_1(root):
     try:
         # intentar lectura de archivos - La funcion siempre leera la primera sheet en el cuaderno excel
         if root.filename[0].split('.')[-1] in ['csv', 'txt', 'CSV', 'TXT']:
-            file_left = pd.read_csv(root.filename[0], header=0, sep=root.txt_sep, error_bad_lines=False, encoding='latin-1')    
+            file_left = pd.read_csv(root.filename[0], header=0, sep=root.txt_sep, error_bad_lines=False)    
         elif root.filename[0].split('.')[-1] in ['xlsx', 'xls', 'XLSX', 'XLS'] :
             file_left = pd.read_excel(root.filename[0])
         else:
@@ -54,7 +54,7 @@ def load_process_2(root):
     """
     try:
         if root.filename[1].split('.')[-1] in ['csv', 'txt', 'CSV', 'TXT']:
-            file_right = pd.read_csv(root.filename[1], header=0, sep=root.txt_sep, error_bad_lines=False, encoding='latin-1')   
+            file_right = pd.read_csv(root.filename[1], header=0, sep=root.txt_sep, error_bad_lines=False)   
         elif root.filename[1].split('.')[-1] in ['xlsx', 'xls','XLSX', 'XLS'] :
             file_right = pd.read_excel(root.filename[1])
         else:
@@ -109,10 +109,12 @@ def files_preparation(file_left, file_right, params):
     if isinstance(file_left, pd.DataFrame) and isinstance(file_right, pd.DataFrame): # verificar que los archivos son dataframes
         print('Prepocesamiento de las llaves ...')
         for k_left in params['keys_left']: # iterar sobre todas las keys left para preprocesar
+            #print(file_left.keys())
             file_left[k_left] = file_left[k_left].astype(str).str.strip().str.upper() # convertir str y eliminar espacios
             file_left[k_left] = file_left[k_left].apply(lambda x: re.sub('\W+','',x)) # eliminar caracteres especiales
 
         for k_right in params['keys_right']: # iterar sobre todas las keys right para preprocesar
+            #print(file_right.keys())
             file_right[k_right] = file_right[k_right].astype(str).str.strip().str.upper() # convertir str y eliminar espacios
             file_right[k_right] = file_right[k_right].apply(lambda x: re.sub('\W+','',x)) # eliminar caracteres especiales
         
