@@ -27,8 +27,8 @@ Al final guardara un archivo excel en la misma ruta donde se leyeron los archivo
   más su ejecución dando la sensación de haberse bloqueado.
 
 ## Mejoras - TO DO:
-* Habilitar la opción de leer archivos CSV.
-* Ejecutar el proceso de cargue de archivos en un nuevo proceso para hacer más ligera la ejecución.
+* Habilitar la opción de leer archivos CSV. (ya se añadió, tambien txt)
+* Ejecutar el proceso de cargue de archivos en un nuevo proceso para hacer más ligera la ejecución. (ya se añadió, pero se puede mejorar)
 * Listar las variables que hay en cada archivo con el fin de seleccionarlas y no de ingresarlas manualmente.
 * Hacer más testeo
 
